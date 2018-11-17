@@ -2,25 +2,13 @@ import os
 import re
 
 
-def walk(path):
-    print(path)
-    root = ''
-    dirs = []
-    files = []
-    for root, dirs, files in os.walk(path):
-        print(root, dirs, files)
-        root = root
-        dirs = dirs
-        files = files
-
-    return root, dirs, files
-
 def get_depth(path):
     counter = 0
     for root, dirs, files in os.walk(path):
         counter = max(counter, len(root.split(os.sep)))
 
     return counter - 1
+
 
 def find_cyrillic(path):
     counter = 0
@@ -36,6 +24,7 @@ def get_popular_extensions(path):
     maxValue = 0
     file_extensions = []
     for root, dirs, files in os.walk(path):
+
         for file in files:
             filename, file_extension = os.path.splitext(file)
 
@@ -49,7 +38,7 @@ def get_popular_extensions(path):
         if value > maxValue:
             maxValue = value
             file_extensions = [key]
-        elif (value == maxValue):
+        elif value == maxValue:
             file_extensions.append(key)
 
     return file_extensions
@@ -73,10 +62,44 @@ def get_popular_first_letter(path):
         if value > maxValue:
             maxValue = value
             first_letters = [key]
-        elif (value == maxValue):
+        elif value == maxValue:
             first_letters.append(key)
 
     return first_letters
+
+
+def get_different_file_names(path):
+    diff_names = set()
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            filename, file_extension = os.path.splitext(file)
+            diff_names.add(filename)
+
+    return len(diff_names)
+
+
+def find_similar_extensions(path):
+    counter = 0
+    for root, dirs, files in os.walk(path):
+        extensions = set()
+        for file in files:
+            filename, file_extension = os.path.splitext(file)
+            extensions.add(file_extension)
+        if len(files) != len(extensions):
+            counter += 1
+
+    return counter
+
+
+def find_rich_folder(path):
+    max_files = 0
+    rich_folder = path
+    for root, dirs, files in os.walk(path):
+        if len(files) > max_files:
+            max_files = len(files)
+            rich_folder = root
+
+    return rich_folder
 
 
 def main():
@@ -84,8 +107,11 @@ def main():
     print(find_cyrillic('.'))
     print(get_popular_extensions('.'))
     print(get_popular_first_letter('.'))
+    print(get_different_file_names('.'))
+    print(find_similar_extensions('.'))
+    print(find_rich_folder('.'))
 
-    pass
+    return
 
 
 if __name__ == '__main__':
